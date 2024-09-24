@@ -1,4 +1,4 @@
-import { VStack, Image, Center, Text, Heading , ScrollView, useToast} from "@gluestack-ui/themed"
+import { VStack, Image, Center, Text, Heading , ScrollView, useToast, set} from "@gluestack-ui/themed"
 import { useNavigation } from "@react-navigation/native"
 import { useForm, Controller } from "react-hook-form"
 import { yupResolver } from '@hookform/resolvers/yup'
@@ -14,6 +14,7 @@ import Logo from "@assets/logo.svg"
 import { Input } from "@components/input"
 import { AppError } from "@utils/AppError";
 import { Button } from "@components/Button"
+import { ToastMessage } from "@components/ToastMessage";
 
 
 
@@ -56,12 +57,21 @@ export function SignUp(){
       console.log(response.data);
      }catch(error){
         const isAppError = error instanceof AppError;
-        const title = isAppError ? error.message : "Não foi possivel criar a conta. Tente novamente mais tarde"
+        const title = isAppError ? error.message : "Não foi possivel criar a conta. Tente novamente mais tarde";
+
+        setLoading(false);
 
         toast.show({
-          title,
-          placement: 'top',
-          bgColor: '$red500'
+          duration: 4000,
+          placement: "top",  
+          render:({ id }) => {
+              return <ToastMessage
+              title={title}
+              id={id}
+              action="error"
+              onClose={() => toast.close(id)} />;
+          }
+  
         })
      }
     }
@@ -163,4 +173,8 @@ export function SignUp(){
             </VStack>
         </ScrollView>
     )
+}
+
+function setLoading(arg0: boolean) {
+  throw new Error("Function not implemented.");
 }
